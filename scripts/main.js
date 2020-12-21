@@ -1,6 +1,13 @@
 import {get, getAll, update, search } from './BooksAPI.js'
 
-let flag = true
+let shelfDetails = localStorage.getItem('shelfDetails')
+if (!shelfDetails) {
+    shelfDetails = new Object()
+    localStorage.setItem('shelfDetails', JSON.stringify(shelfDetails))
+} else {
+    shelfDetails = JSON.parse(shelfDetails)
+}
+let isReadMode = true
 
 const container = document.querySelector('.container')
 const header = document.querySelector(".header")
@@ -25,15 +32,17 @@ async function loadShelves() {
 }
 
 async function updateAndReload(bookId, shelf) {
+    shelfDetails[bookId] = shelf
+    localStorage.setItem('shelfDetails', JSON.stringify(shelfDetails))
     await update(bookId, shelf)
-    if (flag) {
+    if (isReadMode) {
         loadShelves()
     }
 }
 
 function activateListeners() {
     const dropBtns = document.querySelectorAll(".drop-btn")
-    if (flag) {
+    if (isReadMode) {
         const addBtn = document.querySelector('.add')
         addBtn.addEventListener('click', switchMode)
     }
@@ -43,8 +52,8 @@ function activateListeners() {
 }
 
 function switchMode(e) {
-    flag = !flag
-    if (flag) {
+    isReadMode = !isReadMode
+    if (isReadMode) {
         header.classList.remove("hide-header")
         searchHeader.classList.add("hide-header")
         loadShelves()
@@ -97,30 +106,42 @@ function dropSpanClick(e) {
     this.removeEventListener('click', dropSpanClick)
 }
 
+function shelfManager(book) {
+    if (isReadMode) {
+        shelfDetails[book.id] = book.shelf
+        localStorage.setItem('shelfDetails', JSON.stringify(shelfDetails))
+        return book.shelf
+    }
+    if (book.id in shelfDetails) {
+        return shelfDetails[book.id]
+    }
+    return 'none'
+}
+
 function buildUl(data) {
     return `<ul>${data.map((book) => {
-        const type = book.shelf
+        const shelf = shelfManager(book)
         return `
         <li>
             <img src="${book.imageLinks.thumbnail}">
             <h4>${book.title}</h4>
             <em>${book.authors ? book.authors.join(", "): ''}</em>
             <button class="drop-btn">^</button>
-            <div class="dropdown-spans" data-id="${book.id}" data-current="${type}">
+            <div class="dropdown-spans" data-id="${book.id}" data-current="${shelf}">
                 <span data-type="currentlyReading">
-                    <span class="checked ${type == 'currentlyReading' ? '' : 'hide'}">✔</span>
+                    <span class="checked ${shelf == 'currentlyReading' ? '' : 'hide'}">✔</span>
                     Currently Reading
                 </span>
                 <span data-type="wantToRead">
-                    <span class="checked ${type == 'wantToRead' ? '' : 'hide'}">✔</span>
+                    <span class="checked ${shelf == 'wantToRead' ? '' : 'hide'}">✔</span>
                     Want to Read
                 </span>
                 <span data-type="read">
-                    <span class="checked ${type == 'read' ? '' : 'hide'}">✔</span>
+                    <span class="checked ${shelf == 'read' ? '' : 'hide'}">✔</span>
                     Read
                 </span>
                 <span data-type="none">
-                    <span class="checked ${type == 'none' ? '' : 'hide'}">✔</span>
+                    <span class="checked ${shelf == 'none' ? '' : 'hide'}">✔</span>
                     None
                 </span>
             </div>
