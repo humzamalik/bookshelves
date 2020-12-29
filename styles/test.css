@@ -1,0 +1,10 @@
+.hideit {
+    color: white;
+}
+
+.add {
+    margin: 1rem;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
