@@ -5,22 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Reads</title>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="semantic/dist/semantic.min.css">
+    <link rel="stylesheet" href="styles/test.css">
 </head>
 
 <body>
-    <div class="header">
-        <span>My Reads</span>
+    <div class="ui center aligned padded grid" style="border-radius: 0; background: #24292e;">
+        <h1 class="ui huge header" style="color: white;">My Reads</h1>
     </div>
-    <div class='search-header hide-header'>
-        <button><img src="utills/icon1.png" alt="Back"></button>
-        <form action="">
-            <input type="text" placeholder="Search by Title or author">
-        </form>
+    <div id="search">
+        <div class="ui menu transition">
+            <div class="ui item">
+                <i class="ui icon arrow left"></i>
+            </div>
+            <div class="ui item" style="flex: 1;">
+                <div class="ui icon input ">
+                    <input type="text" placeholder="Search by Title or author">
+                    <i class="search icon"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="container"></div>
-
+    <div class="ui segment" id="segment"></div>
+    <div class="add">
+        <i class="ui plus circle icon huge"></i>
+    </div>
     <script type="module" src="scripts/main.js"></script>
+    <script src="semantic/dist/semantic.min.js"></script>
 </body>
 
 </html>
