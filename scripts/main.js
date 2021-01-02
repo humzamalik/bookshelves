@@ -42,11 +42,13 @@ function updateBook(id, newShelf, prevShelf) {
 
 function addAndUpdateBook(id, newShelf, prevShelf) {
     try {
-        searchedBooks.forEach(book => {
-            if (book.id == id) {
-                books.push(book)
-            }
-        })
+        if (prevShelf == 'none') {
+            searchedBooks.forEach(book => {
+                if (book.id == id) {
+                    books.push(book)
+                }
+            })
+        }
         updateBookShelf(id, newShelf)
         update(id, newShelf)
     } catch (error) {
